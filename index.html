@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLC06 Seat Map</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #a8cbf0 0%, #f4d0e6 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex; flex-direction: column; align-items: center;
+            padding: 20px 10px 40px 10px; margin: 0; min-height: 100vh;
+        }
+        
+        #status-bar {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 12px 25px; border-radius: 30px;
+            margin-bottom: 25px; font-size: 14px; color: #444;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); font-weight: 600;
+            backdrop-filter: blur(5px); transition: color 0.3s ease;
+        }
+        #status-bar.error { color: #e11d48; }
+        
+        .plane-fuselage {
+            background: white; padding: 60px 30px;
+            border-radius: 120px 120px 40px 40px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1); position: relative;
+        }
+        .plane-fuselage::before {
+            content: ''; position: absolute; top: 15px; left: 50%;
+            transform: translateX(-50%); width: 60px; height: 30px;
+            background: #e2e8f0; border-radius: 30px 30px 10px 10px; opacity: 0.5;
+        }
+        .grid {
+            display: grid; grid-template-columns: repeat(3, 35px) 40px repeat(3, 35px);
+            gap: 8px; justify-content: center;
+        }
+        .seat {
+            width: 35px; height: 35px; background-color: #bbdefb;
+            border-radius: 6px 6px 3px 3px; cursor: pointer;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+            font-size: 11px; color: transparent;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .seat:hover {
+            transform: scale(1.15) translateY(-2px);
+            box-shadow: 0 6px 12px rgba(135, 124, 184, 0.3);
+        }
+        .seat.taken { background-color: #877CB8; }
+        
+        .row-number {
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; color: #94a3b8; font-weight: bold;
+        }
+        .exit-gap {
+            grid-column: 1 / -1; height: 30px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .exit-gap::before { content: '⬅ EXIT'; font-size: 10px; color: #ef4444; font-weight: bold; }
+        .exit-gap::after { content: 'EXIT ➔'; font-size: 10px; color: #ef4444; font-weight: bold; }
+
+        #modal-overlay {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(4px); z-index: 10; opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #modal {
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: white; width: 300px; padding: 25px;
+            border-radius: 20px; box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+            z-index: 11; opacity: 0; visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        #modal-overlay.show { display: block; opacity: 1; }
+        #modal.show { transform: translate(-50%, -50%) scale(1); opacity: 1; visibility: visible; }
+        
+        .close-btn {
+            position: absolute; top: 15px; right: 20px;
+            font-size: 26px; color: #cbd5e1; cursor: pointer;
+            line-height: 1; transition: color 0.2s;
+        }
+        .close-btn:hover { color: #1e293b; }
+        .seat-title { color: #877CB8; margin: 0 0 15px 0; font-size: 18px; }
+        
+        .passenger-list { display: flex; flex-direction: column; gap: 12px; }
+        .passenger-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 8px; background: #f8fafc; border-radius: 10px;
+        }
+        .passenger-item img {
+            width: 36px; height: 36px; border-radius: 50%;
+            object-fit: cover; border: 2px solid #877CB8;
+        }
+        .passenger-item span { font-size: 15px; color: #1e293b; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div id="status-bar">Seat map auto-updates every 2 minutes. ✈️</div>
+
+    <div class="plane-fuselage">
+        <div class="grid" id="seat-map"></div>
+    </div>
+
+    <div id="modal-overlay" onclick="closeModal()"></div>
+    <div id="modal">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h3 class="seat-title" id="modal-seat-id">Seat</h3>
+        <div class="passenger-list" id="passenger-list"></div>
+    </div>
+
+    <script>
+        let seatsData = {};
+        const container = document.getElementById('seat-map');
+        const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+        
+        function initGrid() {
+            container.innerHTML = '';
+            for (let i = 1; i <= 35; i++) {
+                if (i === 12 || i === 24) {
+                    let exit = document.createElement('div');
+                    exit.className = 'exit-gap';
+                    container.appendChild(exit);
+                }
+                for (let j = 0; j < 3; j++) container.appendChild(createSeat(i, letters[j]));
+                
+                let aisle = document.createElement('div');
+                aisle.className = 'row-number';
+                aisle.innerText = i;
+                container.appendChild(aisle);
+                
+                for (let j = 3; j < 6; j++) container.appendChild(createSeat(i, letters[j]));
+            }
+        }
+
+        function createSeat(row, letter) {
+            const seatId = `${row}${letter}`;
+            const seatDiv = document.createElement('div');
+            seatDiv.className = 'seat';
+            seatDiv.id = `seat-${seatId}`;
+            seatDiv.title = seatId;
+            return seatDiv;
+        }
+
+        async function fetchSeats() {
+            const statusEl = document.getElementById('status-bar');
+            
+            try {
+                const response = await fetch('seats.json?t=' + Date.now());
+                if (!response.ok) throw new Error("Connection failed");
+                
+                seatsData = await response.json();
+                
+                document.querySelectorAll('.seat').forEach(seat => {
+                    const seatId = seat.id.replace('seat-', '');
+                    if (seatsData[seatId] && seatsData[seatId].length > 0) {
+                        seat.classList.add('taken');
+                        seat.onclick = () => openModal(seatId, seatsData[seatId]);
+                    } else {
+                        seat.classList.remove('taken');
+                        seat.onclick = null;
+                    }
+                });
+
+                // Hiba utáni sikeres szinkronizáció esetén a felirat visszaállítása
+                statusEl.innerHTML = "Seat map auto-updates every 2 minutes. ✈️";
+                statusEl.classList.remove('error');
+                
+            } catch (error) {
+                statusEl.innerHTML = "Connection lost. Waiting for next cycle... ⚠️";
+                statusEl.classList.add('error');
+            }
+        }
+
+        function openModal(seatId, passengers) {
+            document.getElementById('modal-seat-id').innerText = `Seat ${seatId}`;
+            const listContainer = document.getElementById('passenger-list');
+            listContainer.innerHTML = ''; 
+
+            passengers.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'passenger-item';
+                item.innerHTML = `<img src="${p.avatar}" alt="Avatar"><span>${p.name}</span>`;
+                listContainer.appendChild(item);
+            });
+
+            const overlay = document.getElementById('modal-overlay');
+            const modal = document.getElementById('modal');
+            
+            overlay.style.display = 'block';
+            setTimeout(() => {
+                overlay.classList.add('show');
+                modal.classList.add('show');
+            }, 10);
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('show');
+            document.getElementById('modal').classList.remove('show');
+            
+            setTimeout(() => {
+                document.getElementById('modal-overlay').style.display = 'none';
+            }, 300);
+        }
+
+        initGrid();
+        fetchSeats();
+        setInterval(fetchSeats, 120000);
+    </script>
+</body>
+</html>
