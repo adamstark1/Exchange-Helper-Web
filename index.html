@@ -3,14 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FLC06 Seat Map</title>
     <link rel="icon" type="image/png" href="favicon.png">
+    <title>FLC06 Seat Map</title>
     <style>
-        body {
+        html {
             background: linear-gradient(135deg, #a8cbf0 0%, #f4d0e6 100%);
+            min-height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: transparent;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             display: flex; flex-direction: column; align-items: center;
             padding: 20px 10px 40px 10px; margin: 0; min-height: 100vh;
+            box-sizing: border-box;
         }
         
         #status-bar {
@@ -57,8 +64,8 @@
             grid-column: 1 / -1; height: 30px;
             display: flex; align-items: center; justify-content: space-between;
         }
-        .exit-gap::before { content: '⬅ EXIT'; font-size: 10px; color: #ef4444; font-weight: bold; }
-        .exit-gap::after { content: 'EXIT ➔'; font-size: 10px; color: #ef4444; font-weight: bold; }
+        .exit-gap::before { content: '← EXIT'; font-size: 10px; color: #ef4444; font-weight: bold; }
+        .exit-gap::after { content: 'EXIT →'; font-size: 10px; color: #ef4444; font-weight: bold; }
 
         #modal-overlay {
             display: none; position: fixed; top: 0; left: 0;
