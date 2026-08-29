@@ -90,13 +90,6 @@
             "avatar": "https://cdn.discordapp.com/avatars/588471568351363074/0fb141d290433da53030a99a87cc367d.png?size=1024"
         }
     ],
-    "17D": [
-        {
-            "id": 478015834774831109,
-            "name": "𝔄𝔩𝔩𝔊𝔞𝔰𝔊𝔱𝔞2",
-            "avatar": "https://cdn.discordapp.com/guilds/1136772364449894461/users/478015834774831109/avatars/5f2995b272a78d90376a3f7afdd786b7.png?size=1024"
-        }
-    ],
     "22A": [
         {
             "id": 1163662940059209769,
@@ -116,6 +109,13 @@
             "id": 451152453216501760,
             "name": "ᗯᑌTᗩᑎGᗪEᐯ (Hybr1dTheor1st)",
             "avatar": "https://cdn.discordapp.com/guilds/1136772364449894461/users/451152453216501760/avatars/7777530dd7770ae3a722d9b974cd315b.png?size=1024"
+        }
+    ],
+    "2F": [
+        {
+            "id": 478015834774831109,
+            "name": "𝔄𝔩𝔩𝔊𝔞𝔰𝔊𝔱𝔞2",
+            "avatar": "https://cdn.discordapp.com/guilds/1136772364449894461/users/478015834774831109/avatars/5f2995b272a78d90376a3f7afdd786b7.png?size=1024"
         }
     ]
 }
