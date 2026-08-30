@@ -232,13 +232,6 @@
             "avatar": "https://cdn.discordapp.com/avatars/347173216374226967/2b614dad85ad7e9c671fc445f7b0feb4.png?size=1024"
         }
     ],
-    "17B": [
-        {
-            "id": 964954446192857188,
-            "name": "lovetouch4_0",
-            "avatar": "https://cdn.discordapp.com/avatars/964954446192857188/4414aef6788e53e610508b56cd3f15e0.png?size=1024"
-        }
-    ],
     "21A": [
         {
             "id": 1540483705338994729,
@@ -324,6 +317,13 @@
             "id": 448608392173584395,
             "name": "YvKaraty",
             "avatar": "https://cdn.discordapp.com/avatars/448608392173584395/ce3b9f85fd8a1953f7c84f9241ea5547.png?size=1024"
+        }
+    ],
+    "8C": [
+        {
+            "id": 964954446192857188,
+            "name": "lovetouch4_0",
+            "avatar": "https://cdn.discordapp.com/avatars/964954446192857188/4414aef6788e53e610508b56cd3f15e0.png?size=1024"
         }
     ]
 }
