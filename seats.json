@@ -260,13 +260,6 @@
             "avatar": "https://cdn.discordapp.com/avatars/1087067747780935710/415fa3a07d863fdc10c65f38d6b19613.png?size=1024"
         }
     ],
-    "23F": [
-        {
-            "id": 478015834774831109,
-            "name": "𝔄𝔩𝔩𝔊𝔞𝔰𝔊𝔱𝔞2",
-            "avatar": "https://cdn.discordapp.com/guilds/1136772364449894461/users/478015834774831109/avatars/5f2995b272a78d90376a3f7afdd786b7.png?size=1024"
-        }
-    ],
     "29A": [
         {
             "id": 434622972859383808,
@@ -310,6 +303,20 @@
             "id": 724259948984270858,
             "name": "DNAKE11 [GMT+2]",
             "avatar": "https://cdn.discordapp.com/embed/avatars/1.png"
+        }
+    ],
+    "26E": [
+        {
+            "id": 676179239464075340,
+            "name": "La-Flerk",
+            "avatar": "https://cdn.discordapp.com/guilds/1136772364449894461/users/676179239464075340/avatars/4e09435ca0885a260c844a8acf264a33.png?size=1024"
+        }
+    ],
+    "34A": [
+        {
+            "id": 478015834774831109,
+            "name": "𝔄𝔩𝔩𝔊𝔞𝔰𝔊𝔱𝔞2",
+            "avatar": "https://cdn.discordapp.com/guilds/1136772364449894461/users/478015834774831109/avatars/5f2995b272a78d90376a3f7afdd786b7.png?size=1024"
         }
     ]
 }
